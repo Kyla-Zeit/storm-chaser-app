@@ -1,0 +1,9 @@
+{
+  "appId": "com.stormchaser.app",
+  "appName": "Storm Chaser",
+  "webDir": "dist",
+  "server": {
+    "url": "https://06782df2-fcba-4792-a8ba-6919b7719c68.stormchaserproject.com?forceHideBadge=true",
+    "cleartext": true
+  }
+}
