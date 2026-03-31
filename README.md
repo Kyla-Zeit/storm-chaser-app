@@ -1,10 +1,8 @@
 # Storm Chaser
 
-Storm Chaser is a mobile-first weather and storm documentation app built for the **Speer Technologies Mobile Development Assessment**. It allows users to view current weather conditions based on device location, document storm events with photos and metadata, save reports locally on the device, and navigate between weather, documentation, log, and map views.
+Storm Chaser is a mobile-first weather and storm documentation app. It allows users to view current weather conditions based on device location, document storm events with photos and metadata, save reports locally on the device, and navigate between weather, documentation, log, and map views.
 
-## Assessment Summary
-
-This project was built to satisfy the core requirements of the mobile assessment:
+## Summary
 
 - Fetch and display current weather data using the device's current location
 - Show key meteorological information relevant to storm chasers
@@ -13,7 +11,7 @@ This project was built to satisfy the core requirements of the mobile assessment
 - Save captured storm data locally on the device
 - Support intuitive navigation between app sections
 
-In addition to the core requirements, this implementation also includes several extra quality-of-life features such as forecast views, a map view, loading states, and a mobile-friendly interface.
+This implementation also includes several extra quality-of-life features such as forecast views, a map view, loading states, and a mobile-friendly interface.
 
 ---
 
