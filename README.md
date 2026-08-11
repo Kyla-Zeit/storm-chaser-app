@@ -1,124 +1,200 @@
 # Storm Chaser
 
-Storm Chaser is a mobile-first weather and storm documentation app. It allows users to view current weather conditions based on device location, document storm events with photos and metadata, save reports locally on the device, and navigate between weather, documentation, log, and map views.
+**A mobile-first weather and storm field-documentation application built with React, TypeScript, and Capacitor.**
 
-## Summary
+Storm Chaser brings live weather conditions, location-aware storm documentation, local report storage, photo capture, and map-based review into one field-friendly workflow. It is designed around a simple problem: when severe weather is moving quickly, a user should be able to check conditions, document what they are seeing, and preserve the report without jumping between unrelated apps.
 
-- Fetch and display current weather data using the device's current location
-- Show key meteorological information relevant to storm chasers
-- Display a "Not Found" state when weather data cannot be retrieved
-- Capture storm photos with metadata
-- Save captured storm data locally on the device
-- Support intuitive navigation between app sections
+The project combines a responsive React interface with device geolocation, Open-Meteo weather data, Capacitor camera support, local-first persistence, and Leaflet mapping.
 
-This implementation also includes several extra quality-of-life features such as forecast views, a map view, loading states, and a mobile-friendly interface.
+## Screenshots
 
----
+<p align="center">
+  <img src="docs/assets/weather.png" alt="Storm Chaser weather dashboard" width="46%" />
+  &nbsp;&nbsp;
+  <img src="docs/assets/document.png" alt="Storm Chaser documentation screen" width="46%" />
+</p>
 
-## Features
+<p align="center">
+  <strong>Weather</strong> — current storm conditions, field metrics, forecasts, GPS status, and locally stored report counts.<br/>
+  <strong>Document</strong> — mobile-first storm capture workflow with camera/photo-library support and field metadata.
+</p>
 
-### 1. Weather Data View
-- Fetches current weather data using the device's geolocation
-- Displays storm-relevant weather information including:
-  - Temperature
-  - Wind speed
-  - Wind direction
-  - Humidity
-  - Precipitation
-  - Pressure
-  - Cloud cover
-  - Apparent temperature
-- Includes hourly and daily forecast cards
-- Displays a dedicated **Weather Data Not Found** state when weather retrieval fails
-- Includes loading skeletons while weather data is being fetched
-- Includes a manual refresh action
+<p align="center">
+  <img src="docs/assets/storm-log.png" alt="Storm Chaser saved storm log" width="46%" />
+  &nbsp;&nbsp;
+  <img src="docs/assets/storm-map.png" alt="Storm Chaser storm report map" width="46%" />
+</p>
 
-### 2. Storm Documentation
-- Capture a storm photo using the device camera or photo library
-- Attach metadata to each report:
-  - Weather conditions
-  - Location coordinates
-  - Date and time
-  - Notes / description
-  - Storm type / classification
-- Compresses image data before saving to improve mobile/browser persistence reliability
+<p align="center">
+  <strong>Storm Log</strong> — locally persisted observations with storm type, weather, location, time, and notes.<br/>
+  <strong>Map</strong> — saved storm reports plotted geographically with storm-specific markers.
+</p>
 
-### 3. Local Data Persistence
-- Saves storm reports locally on the device/browser
-- Uses local storage strategy for persistence
-- Reports persist across sessions
-- Saved reports include:
-  - Photo
-  - Timestamp
-  - Location
-  - Storm type
-  - Weather summary
-  - Notes
+> README screenshots were captured from the real production build in a mobile browser viewport using deterministic demo weather and report data.
 
-### 4. Navigation / UX
-- Mobile-style bottom navigation between:
-  - Weather
-  - Document
-  - Log
-  - Map
-- Top dashboard cards showing:
-  - Stored reports
-  - Saved photos
-  - GPS status
-- Mobile-friendly responsive layout for browser-based phone testing
+## Product at a glance
 
-### 5. Additional Enhancements
-- Saved photo gallery
-- Storm log view
-- Map visualization of storm report locations
-- Animated UI transitions
-- Friendly empty states and retry states
+| Area | Implementation |
+| --- | --- |
+| Frontend | React + TypeScript + Vite |
+| Mobile layer | Capacitor with Android project included |
+| Weather | Open-Meteo forecast API |
+| Location | Capacitor Geolocation on native builds, browser Geolocation fallback |
+| Photo capture | Capacitor Camera on native builds, browser camera/file fallback |
+| Persistence | IndexedDB with localStorage fallback |
+| Mapping | Leaflet with CARTO / OpenStreetMap tiles |
+| UI | Tailwind CSS, shadcn/ui, Framer Motion, Lucide |
+| Testing | Vitest + Playwright tooling |
 
----
+## Field workflow
 
-## Tech Stack
+```text
+Device Location
+      ↓
+Current Weather + Forecast
+      ↓
+Capture / Select Storm Photo
+      ↓
+Attach Time + GPS + Weather + Storm Type + Notes
+      ↓
+Compress Image + Save Report Locally
+      ↓
+Review in Gallery / Storm Log / Map
+```
 
-- **React**
-- **TypeScript**
-- **Vite**
-- **Tailwind CSS**
-- **shadcn/ui**
-- **Framer Motion**
-- **Lucide React**
-- **Open-Meteo API** for weather data
-- **Capacitor Camera** for native/browser-compatible photo capture
-- **IndexedDB with localStorage fallback** for local storm report storage
-- **Vitest** for unit testing
+The core workflow is intentionally local-first. Storm reports do not require an application backend to be useful, and saved observations remain available across sessions on the device or browser where they were recorded.
 
----
+## Core features
 
-## Architecture / Implementation Decisions
+### Live weather and forecasts
 
-This app uses a **component-based architecture** with logic separated into reusable hooks and UI components.
+- Uses the device's current coordinates to request current conditions from Open-Meteo
+- Displays temperature, apparent temperature, humidity, precipitation, pressure, cloud cover, wind speed, and wind direction
+- Includes hourly and seven-day forecast views
+- Maps WMO weather codes to readable descriptions and visual conditions
+- Includes loading skeletons, refresh controls, and a dedicated failure state when weather cannot be retrieved
 
-### Key decisions
-- **Custom hooks** are used for location, weather fetching, and report persistence
-- **Reusable UI components** are used to keep the interface modular and easier to maintain
-- **Weather logic** is separated from display components
-- **Persistence** is handled outside page components to keep views focused on rendering
-- **Mobile-first layout** was prioritized because the assessment is specifically for a storm-chasing mobile experience
-- **Browser-based phone testing over local IP** was supported to make device preview easier without requiring a full native build
+### Storm documentation
 
-### Main architectural pieces
-- `use-geolocation`  
-  Handles device location retrieval
-- `use-weather`  
-  Handles weather fetching, loading state, error state, and refresh logic
-- `use-storm-reports`  
-  Handles report creation, deletion, local persistence, and statistics
-- `StormDocForm`  
-  Handles photo capture, metadata entry, and report submission
-- `PhotoGallery`, `StormLog`, `StormMap`  
-  Present saved storm data in different views
+- Capture a new image from the device camera or select an existing image
+- Native Capacitor camera support with browser-compatible fallbacks
+- Compress image data before persistence to make local storage more practical on mobile devices
+- Associate each observation with:
+  - storm classification
+  - timestamp
+  - coordinates
+  - current weather conditions
+  - temperature and wind data when available
+  - field notes
+- Supports thunderstorms, tornadoes, hurricanes, hailstorms, blizzards, derechos, microbursts, supercells, and custom/other events
 
----
+### Local-first persistence
 
-## Project Structure
+Storm reports are stored through a small persistence layer rather than directly inside UI components.
+
+The application attempts to use **IndexedDB** first and falls back to **localStorage** when IndexedDB is unavailable or fails. Reports are sorted by observation time when loaded and persist across browser or app sessions on the same device.
+
+### Storm log and gallery
+
+Saved observations can be reviewed as a structured storm log, while captured images are surfaced through the photo gallery. Report counts and saved-photo counts are also visible from the main dashboard so the user can quickly confirm what has been stored locally.
+
+### Map-based review
+
+Saved reports with coordinates are rendered on a Leaflet map. Each observation uses a storm-specific marker and can expose its storm type, date, and notes through the map interface.
+
+When multiple observations exist, the map automatically fits the report locations rather than forcing the user to manually find each event.
+
+## Architecture
+
+```text
+React UI
+  │
+  ├── useGeolocation
+  │     ├── Capacitor Geolocation (native)
+  │     └── Browser Geolocation (web)
+  │
+  ├── useWeather
+  │     └── Open-Meteo API
+  │
+  └── useStormReports
+        └── storm-report-storage
+              ├── IndexedDB
+              └── localStorage fallback
+
+Saved Reports
+  ├── Photo Gallery
+  ├── Storm Log
+  └── Leaflet Map
+```
+
+The project keeps device access, API requests, persistence, and presentation concerns separated. Weather fetching lives in its own hook, geolocation is abstracted behind native/web behavior, and report storage is isolated from page components.
+
+## Mobile implementation
+
+Storm Chaser includes a Capacitor Android project under [`android/`](android/). The same React application can therefore run as a mobile web experience during development and as a native-container Android build with access to Capacitor plugins.
+
+The native path uses Capacitor for camera and geolocation access. Browser fallbacks remain available so the UI and core workflow can also be tested without requiring an emulator or physical phone for every change.
+
+## Reliability and fallback behavior
+
+Field software has to remain useful when a dependency is unavailable, so several failure paths are handled explicitly:
+
+- Weather API failure produces a dedicated retry state instead of a broken dashboard
+- Browser geolocation failure falls back to a default location so weather functionality can continue
+- IndexedDB failure falls back to localStorage
+- Native camera access has browser-compatible photo-selection paths
+- Loading states prevent the interface from presenting incomplete weather data as final results
+
+## Testing
+
+The repository includes Vitest coverage for weather utility behavior, including WMO descriptions and icon selection, along with Playwright browser tooling for UI-level validation.
+
+Run the existing checks with:
+
+```bash
+npm test
+npm run build
+npm run lint
+```
+
+## Run locally
+
+### Requirements
+
+- Node.js 20+ recommended
+- npm
+
+### Install and start
+
+```bash
+git clone https://github.com/Kyla-Zeit/storm-chaser-app.git
+cd storm-chaser-app
+npm install
+npm run dev
+```
+
+Vite will print the local development URL in the terminal.
+
+### Production build
+
+```bash
+npm run build
+npm run preview
+```
+
+## Android development
+
+After building the web assets, sync the Capacitor project and open Android Studio:
+
+```bash
+npm run build
+npx cap sync android
+npx cap open android
+```
+
+Camera and location behavior depends on the permissions granted by the device or emulator.
+
+## Project structure
 
 ```text
 src/
@@ -152,3 +228,27 @@ src/
 
   types/
     storm.ts
+
+android/
+docs/assets/
+Documentation/
+```
+
+## Tech stack
+
+**Frontend:** React · TypeScript · Vite · Tailwind CSS · shadcn/ui  
+**Mobile:** Capacitor · Capacitor Camera · Capacitor Geolocation · Android  
+**Data & APIs:** Open-Meteo · IndexedDB · localStorage  
+**Mapping:** Leaflet · OpenStreetMap / CARTO tiles  
+**UI:** Framer Motion · Lucide React  
+**Quality:** Vitest · Playwright · ESLint
+
+## Documentation
+
+A fuller project write-up is included in [`Documentation/Maguire_Rebecca_Storm_Chaser_App.pdf`](Documentation/Maguire_Rebecca_Storm_Chaser_App.pdf).
+
+## Current scope
+
+Storm Chaser is a portfolio project demonstrating mobile-first product design, browser/native capability bridging, third-party API integration, device-aware workflows, local persistence, mapping, and practical fallback behavior.
+
+The current implementation stores field reports locally rather than synchronizing them to a shared cloud account. A production multi-user version would need authenticated cloud storage, cross-device synchronization, stronger offline conflict handling, and a defined data-retention/security model for uploaded media.
