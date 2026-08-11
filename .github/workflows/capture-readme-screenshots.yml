@@ -46,7 +46,7 @@ jobs:
       - name: Capture real application screens
         run: |
           mkdir -p docs/assets
-          cat > /tmp/capture-storm-chaser.mjs <<'JS'
+          cat > capture-storm-chaser.mjs <<'JS'
           import { chromium } from '@playwright/test';
 
           const browser = await chromium.launch({ headless: true });
@@ -165,7 +165,8 @@ jobs:
 
           await browser.close();
           JS
-          node /tmp/capture-storm-chaser.mjs
+          node capture-storm-chaser.mjs
+          rm capture-storm-chaser.mjs
           file docs/assets/*.png
 
       - name: Commit screenshots
